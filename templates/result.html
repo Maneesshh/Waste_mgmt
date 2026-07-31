@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<h2 class="mb-3">
+
+Prediction
+
+</h2>
+
+<img
+src="{{ url_for('static', filename=image) }}"
+class="img-fluid">
+
+<hr>
+
+<h3>
+
+Detected Objects
+
+</h3>
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>Class</th>
+
+<th>Confidence</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for p in predictions %}
+
+<tr>
+
+<td>{{ p.class }}</td>
+
+<td>{{ p.confidence }}%</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<a
+href="/"
+class="btn btn-success">
+
+Predict Another
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

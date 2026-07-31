@@ -1,0 +1,35 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Dataset
+dataset/
+
+# Training outputs
+runs/
+logs/
+uploads/
+
+# Predictions
+static/predictions/
+
+# Model weights
+*.pt
+*.onnx
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+models/*.pt
+!models/yolo26n.pt

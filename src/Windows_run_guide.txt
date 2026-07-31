@@ -1,0 +1,249 @@
+# Waste Detection - Windows Setup Guide
+
+## Requirements
+
+* Windows 10/11
+* Python 3.12.x
+* Git
+
+---
+
+## 1. Clone Repository
+
+clone Repository
+
+cd WasteDetection
+```
+
+---
+
+## 2. Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+---
+
+## 3. Activate Virtual Environment
+
+### Command Prompt (CMD)
+
+```cmd
+.venv\Scripts\activate
+```
+
+### PowerShell
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks execution:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Then activate again:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+---
+
+## 4. Upgrade pip
+
+```bash
+python -m pip install --upgrade pip
+```
+
+---
+
+## 5. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 6. Create Environment File
+
+Copy the example environment file.
+
+### Command Prompt
+
+```cmd
+copy .env.example .env
+```
+
+### PowerShell
+
+```powershell
+Copy-Item .env.example .env
+```
+
+---
+
+## 7. Verify Trained Model
+
+Make sure the trained model exists:
+
+```text
+models/
+└── best.pt
+```
+
+If this file is missing, the application will not start.
+
+---
+
+## 8. Run the Flask Application
+
+```bash
+python app.py
+```
+
+---
+
+## 9. Open in Browser
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## Optional Commands
+
+### Train Model Again
+
+```bash
+python train.py
+```
+
+### Evaluate Model
+
+```bash
+python evaluate.py
+```
+
+### Test Prediction Script
+
+```bash
+python predict.py
+```
+
+---
+
+# Troubleshooting
+
+### Python not found
+
+Reinstall Python and check:
+
+```
+☑ Add Python to PATH
+```
+
+---
+
+### ModuleNotFoundError
+
+Run:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Model not found
+
+Verify:
+
+```text
+models/
+└── best.pt
+```
+
+---
+
+### Port already in use
+
+Open `.env` and change:
+
+```env
+PORT=8001
+```
+
+or another available port.
+
+---
+
+### Verify Python Version
+
+```bash
+python --version
+```
+
+Expected:
+
+```
+Python 3.12.x
+```
+
+---
+
+# Project Structure
+
+```text
+WasteDetection/
+│
+├── app.py
+├── train.py
+├── predict.py
+├── evaluate.py
+├── requirements.txt
+├── README.md
+├── windows_req.txt
+├── .env.example
+│
+├── models/
+│   └── best.pt
+│
+├── src/
+├── templates/
+├── static/
+├── uploads/
+├── logs/
+└── dataset/
+```
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/<YOUR_USERNAME>/WasteDetection.git
+
+cd WasteDetection
+
+python -m venv .venv
+
+.venv\Scripts\activate
+
+pip install -r requirements.txt
+
+copy .env.example .env
+
+python app.py
+```
+
+Open your browser and navigate to:
+
+```
+http://127.0.0.1:8000
+```
