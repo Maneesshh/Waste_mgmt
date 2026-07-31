@@ -1,48 +1,51 @@
-# ♻️ Waste Detection using YOLO11
+# ♻️ Waste Detection using YOLO26
 
-An end-to-end **Waste Detection System** built with **YOLO11**, **Flask**, and **Python**. The application detects waste objects from images and classifies them into **five recyclable waste categories**.
-
----
-
-## 📌 Features
-
-* YOLO11 Object Detection
-* Five waste categories
-* Automatic dataset preparation
-* Label remapping from 42 classes to 5 classes
-* 70/15/15 train-validation-test split
-* Flask web interface
-* REST API
-* Prediction history logging
-* Cross-platform (Windows, macOS, Linux)
-* Modular project structure
+An end-to-end **Waste Detection System** built using **YOLO26**, **Flask**, and **Python**. The system detects waste objects from images and classifies them into **five recyclable waste categories** (Plastic, Paper, Glass, Metal, and Trash). It includes automatic dataset preprocessing, model training, evaluation, and a user-friendly web interface for inference.
 
 ---
 
-## 📂 Project Structure
+# 📌 Features
+
+- ✅ YOLO26 Object Detection
+- ✅ Automatic dataset preprocessing
+- ✅ Label remapping (42 → 5 classes)
+- ✅ Dataset split (70% Train / 15% Validation / 15% Test)
+- ✅ Model training and evaluation
+- ✅ Flask web application
+- ✅ Prediction history logging
+- ✅ Upload image and detect waste
+- ✅ Cross-platform (Windows, macOS, Linux)
+- ✅ Modular and scalable project structure
+
+---
+
+# 📂 Project Structure
 
 ```text
 WasteDetection/
 │
-├── app.py
-├── train.py
-├── predict.py
-├── evaluate.py
+├── app.py                     # Flask application
+├── train.py                   # Train the YOLO26 model
+├── predict.py                 # Command-line prediction
+├── evaluate.py                # Evaluate trained model
+├── download_model.py          # Download YOLO26 pretrained weights
 ├── requirements.txt
+├── requirements-lock.txt
 ├── README.md
-├── .env
+├── .env.example
 ├── .gitignore
 │
-├── dataset/
-│   ├── raw/
-│   └── processed/
-│
 ├── models/
-│   └── yolo11n.pt
+│   └── yolo26n.pt             # Pretrained model (download separately)
+│
+├── dataset/
+│   ├── raw/                   # Original dataset (not included)
+│   └── processed/             # Generated dataset (not included)
 │
 ├── runs/
+│   └── waste_detection/        # Generated after training
 │
-├── uploads/
+├── uploads/                   # Uploaded images
 │
 ├── logs/
 │   ├── application.log
@@ -53,14 +56,12 @@ WasteDetection/
 │
 ├── templates/
 │   ├── base.html
-│   ├── index.html
-│   ├── result.html
 │   ├── history.html
-│   ├── 404.html
-│   └── 500.html
+│   ├── index.html
+│   └── result.html
 │
 └── src/
-    ├── cleanup.py
+    ├── __init__.py
     ├── config.py
     ├── dataset.py
     ├── history.py
@@ -69,51 +70,53 @@ WasteDetection/
     ├── predictor.py
     ├── trainer.py
     ├── utils.py
-    └── validator.py
+    ├── validator.py
+    └── Windows_run_guide.txt
 ```
 
 ---
 
-# Dataset
+# 🗂 Dataset
 
-The project uses the **ProjectVerba YOLO Waste Detection Dataset**, originally containing **42 waste classes**.
+This project uses the **ProjectVerba YOLO Waste Detection Dataset**, which originally contains **42 waste classes**.
 
-These classes are automatically remapped into **5 final classes**.
+The dataset is automatically remapped into **5 final categories** during preprocessing.
 
-| Final Class | Original Classes                                                                                                                                                                                                                 |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Plastic     | Plastic bottle, Plastic bag, Plastic cup, Plastic can, Plastic canister, Plastic caps, Plastic shaker, Plastic toys, Plastic shavings, Stretch film, Zip plastic bag, Unknown plastic, Combined plastic, Milk bottle, Tetra pack |
-| Paper       | Paper, Paper bag, Paper cups, Paper shavings, Cardboard, Postal packaging, Papier mache, Cellulose                                                                                                                               |
-| Glass       | Glass bottle                                                                                                                                                                                                                     |
-| Metal       | Aluminum can, Aluminum caps, Scrap metal, Tin, Foil, Iron utensils, Metal shavings                                                                                                                                               |
-| Trash       | Organic, Textile, Electronics, Ceramic, Wood, Liquid, Disposable tableware, Container for household chemicals, Aerosols, Furniture, Printing industry                                                                            |
+| Final Class | Original Classes |
+|-------------|------------------|
+| **Plastic** | Plastic bottle, Plastic bag, Plastic cup, Plastic can, Plastic canister, Plastic caps, Plastic shaker, Plastic toys, Plastic shavings, Stretch film, Zip plastic bag, Unknown plastic, Combined plastic, Milk bottle, Tetra pack |
+| **Paper** | Paper, Paper bag, Paper cups, Paper shavings, Cardboard, Postal packaging, Papier mache, Cellulose |
+| **Glass** | Glass bottle |
+| **Metal** | Aluminum can, Aluminum caps, Scrap metal, Tin, Foil, Iron utensils, Metal shavings |
+| **Trash** | Organic, Textile, Electronics, Ceramic, Wood, Liquid, Disposable tableware, Container for household chemicals, Aerosols, Furniture, Printing industry |
 
 Dataset split:
 
-* **Training:** 70%
-* **Validation:** 15%
-* **Testing:** 15%
+- **Training:** 70%
+- **Validation:** 15%
+- **Testing:** 15%
 
 ---
 
-# Tech Stack
+# 🛠 Tech Stack
 
-* Python 3.12+
-* Ultralytics YOLO11
-* Flask
-* OpenCV
-* NumPy
-* PyYAML
-* Pillow
-* python-dotenv
-* tqdm
-* scikit-learn
+- Python 3.12+
+- Ultralytics YOLO26
+- PyTorch
+- Flask
+- OpenCV
+- NumPy
+- Pillow
+- PyYAML
+- scikit-learn
+- python-dotenv
+- tqdm
 
 ---
 
-# Installation
+# 🚀 Installation
 
-## Clone Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/<your-username>/WasteDetection.git
@@ -123,7 +126,7 @@ cd WasteDetection
 
 ---
 
-## Create Virtual Environment
+## 2. Create Virtual Environment
 
 ### Windows
 
@@ -143,7 +146,7 @@ source .venv/bin/activate
 
 ---
 
-## Install Dependencies
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -151,32 +154,28 @@ pip install -r requirements.txt
 
 ---
 
-## Download YOLO11 Model
+# 📥 Download the YOLO26 Pretrained Model
 
-Download one of the following models from Ultralytics:
+The repository does **not** include pretrained or trained model weights to keep its size small.
 
-* yolo11n.pt
-* yolo11s.pt
-* yolo11m.pt
+Download the pretrained model automatically:
 
-Place the model inside:
-
-```text
-models/
+```bash
+python download_model.py
 ```
 
-Example:
+or manually download **yolo26n.pt** and place it inside:
 
 ```text
 models/
-└── yolo11n.pt
+└── yolo26n.pt
 ```
 
 ---
 
-# Dataset Preparation
+# 📂 Dataset Preparation
 
-Copy the original YOLO dataset into
+Copy your original YOLO dataset into:
 
 ```text
 dataset/raw/
@@ -186,12 +185,11 @@ Expected structure:
 
 ```text
 dataset/raw/
-
-train/
-valid/
-test/
-
-data.yaml
+│
+├── train/
+├── valid/
+├── test/
+└── data.yaml
 ```
 
 Prepare the dataset:
@@ -200,68 +198,96 @@ Prepare the dataset:
 python test_dataset.py
 ```
 
-This automatically:
+The preprocessing pipeline automatically:
 
-* Reads all annotations
-* Remaps labels
-* Removes invalid annotations
-* Splits dataset
-* Creates processed dataset
-* Generates new data.yaml
+- Loads the dataset
+- Remaps 42 classes into 5 classes
+- Removes invalid annotations
+- Creates train/validation/test datasets
+- Generates a new `data.yaml`
 
 ---
 
-# Training
+# ⚙️ Configuration
 
-Edit `.env`
+Project settings are stored inside the `.env` file.
+
+Example:
 
 ```env
-MODEL_NAME=yolo11n.pt
+MODEL_NAME=best.pt
 
-IMAGE_SIZE=640
+IMAGE_SIZE=512
 
 EPOCHS=100
 
-BATCH_SIZE=8
+BATCH_SIZE=16
 
-DEVICE=cpu
+DEVICE=auto
 
 CONFIDENCE=0.25
+
+HOST=127.0.0.1
+
+PORT=8000
+
+DEBUG=True
 ```
 
-Start training
+---
+
+# 🏋️ Training
+
+Start training using the YOLO26 pretrained model:
 
 ```bash
 python train.py
 ```
 
-Training results are saved in:
+The model automatically starts from:
+
+```text
+models/yolo26n.pt
+```
+
+Training outputs are saved to:
 
 ```text
 runs/
-
-waste_detection/
+└── waste_detection/
+    └── weights/
+        ├── best.pt
+        └── last.pt
 ```
+
+The Flask application automatically loads:
+
+```text
+runs/waste_detection/weights/best.pt
+```
+
+for inference after training.
 
 ---
 
-# Evaluate Model
+# 📈 Evaluate the Model
 
 ```bash
 python evaluate.py
 ```
 
-Metrics include:
+Evaluation includes:
 
-* Precision
-* Recall
-* mAP50
-* mAP50-95
-* Confusion Matrix
+- Precision
+- Recall
+- mAP@50
+- mAP@50-95
+- Confusion Matrix
+- Validation Loss
 
 ---
 
-# Run Prediction
+# 🔍 Command-Line Prediction
 
 ```bash
 python predict.py
@@ -269,96 +295,76 @@ python predict.py
 
 ---
 
-# Run Flask Application
+# 🌐 Run the Flask Application
 
 ```bash
 python app.py
 ```
 
-Open
+Open your browser:
 
 ```text
-http://127.0.0.1:5000
+http://127.0.0.1:8000
 ```
+
+Upload an image and the application will:
+
+- Detect waste objects
+- Draw bounding boxes
+- Display detected classes
+- Show confidence scores
+- Save prediction history
 
 ---
 
-# REST API
+# 📜 Prediction History
 
-## Predict
-
-```http
-POST /api/predict
-```
-
-Body:
-
-```
-image : File
-```
-
-Example Response
-
-```json
-{
-  "success": true,
-  "filename": "plastic.jpg",
-  "prediction_count": 2,
-  "predictions": [
-    {
-      "class": "Plastic",
-      "confidence": 98.74
-    },
-    {
-      "class": "Metal",
-      "confidence": 91.20
-    }
-  ]
-}
-```
-
----
-
-# Prediction History
-
-Every prediction is automatically stored in
+Every prediction is automatically saved to:
 
 ```text
 logs/history.csv
 ```
 
-Example
+Example:
 
-| Date             | Image      | Class   | Confidence |
-| ---------------- | ---------- | ------- | ---------- |
-| 2026-07-27 10:20 | bottle.jpg | Plastic | 98.45      |
+| Date | Image | Class | Confidence |
+|------|-------|-------|-----------|
+| 2026-07-27 10:20 | bottle.jpg | Plastic | 98.45% |
 
----
-
-# Configuration
-
-Project settings are stored inside
+The history page can be viewed at:
 
 ```text
-.env
-```
-
-Example
-
-```env
-MODEL_NAME=yolo11n.pt
-IMAGE_SIZE=640
-EPOCHS=100
-BATCH_SIZE=8
-DEVICE=cpu
-CONFIDENCE=0.25
+http://127.0.0.1:8000/history
 ```
 
 ---
 
-# Output
+# 📦 Repository Notes
 
-Training generates:
+To keep the repository lightweight, the following files are **not included**:
+
+- Original dataset
+- Processed dataset
+- Training outputs (`runs/`)
+- Prediction images
+- Uploaded images
+- Log files
+- Trained model (`best.pt`)
+
+After cloning the repository:
+
+1. Install dependencies.
+2. Download `yolo26n.pt`.
+3. Place your dataset in `dataset/raw/`.
+4. Prepare the dataset.
+5. Train the model.
+6. Run the Flask application.
+
+---
+
+# 📊 Training Output
+
+After training, YOLO26 generates:
 
 ```text
 runs/
@@ -371,32 +377,36 @@ runs/
     ├── results.png
     ├── F1_curve.png
     ├── PR_curve.png
-    └── P_curve.png
+    ├── P_curve.png
+    └── labels.jpg
 ```
 
 ---
 
-# Future Improvements
+# 💡 Future Improvements
 
-* Live webcam detection
-* Video inference
-* Drag-and-drop image upload
-* User authentication
-* Database integration
-* Docker deployment
-* Cloud deployment
-* Mobile application integration
+- Live webcam detection
+- Video inference
+- Drag-and-drop image upload
+- Real-time object tracking
+- User authentication
+- Database integration
+- Docker support
+- Cloud deployment
+- Mobile application
 
 ---
 
-# License
+# 📄 License
 
 This project is intended for educational and research purposes.
 
+---
 
-# Acknowledgements
+# 🙏 Acknowledgements
 
-* Ultralytics YOLO
-* Flask
-* ProjectVerba YOLO Waste Detection Dataset
-* Open Source Python Community
+- Ultralytics YOLO26
+- Flask
+- PyTorch
+- ProjectVerba Waste Detection Dataset
+- Open Source Python Community
