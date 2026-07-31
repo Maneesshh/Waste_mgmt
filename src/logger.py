@@ -3,19 +3,41 @@ Application Logger
 """
 
 import logging
+from pathlib import Path
 
 from src.config import LOG_DIR
 
-LOG_DIR.mkdir(exist_ok=True)
+# Create log directory if it doesn't exist
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-logging.basicConfig(
 
-    filename=LOG_DIR / "application.log",
+def setup_logger(log_file: Path, name: str = "WasteDetection") -> logging.Logger:
+    """
+    Create and return a logger that writes to the given log file.
+    """
 
-    level=logging.INFO,
+    logger = logging.getLogger(name)
 
-    format="%(asctime)s | %(levelname)s | %(message)s"
+    if logger.handlers:
+        return logger
 
-)
+    logger.setLevel(logging.INFO)
 
-logger = logging.getLogger("WasteDetection")
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)s | %(message)s"
+    )
+
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setFormatter(formatter)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    return logger
+
+
+# Default application logger
+logger = setup_logger(LOG_DIR / "application.log")

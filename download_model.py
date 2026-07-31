@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
-print("Downloading YOLO11m model...")
+print("Downloading YOLO26m model...")
 
-model = YOLO("yolo11m.pt")
+model = YOLO("yolo26m.pt")
 
 print("Download completed!")
