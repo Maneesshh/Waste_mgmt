@@ -1,7 +1,28 @@
-from ultralytics import YOLO
+"""
+Main training script.
+"""
 
-print("Downloading YOLO26m model...")
+import argparse
 
-model = YOLO("yolo26m.pt")
+from src.trainer import WasteTrainer
 
-print("Download completed!")
+
+def main():
+
+    parser = argparse.ArgumentParser(description="YOLO26 Waste Detection Training")
+
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume training from runs/waste_detection/weights/last.pt"
+    )
+
+    args = parser.parse_args()
+
+    trainer = WasteTrainer()
+
+    trainer.train(resume=args.resume)
+
+
+if __name__ == "__main__":
+    main()
