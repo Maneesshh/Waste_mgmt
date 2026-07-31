@@ -74,7 +74,7 @@ MODEL_PATH = TRAINED_MODEL if TRAINED_MODEL.exists() else PRETRAINED_MODEL
 
 IMAGE_SIZE = int(os.getenv("IMAGE_SIZE", "640"))
 EPOCHS = int(os.getenv("EPOCHS", "100"))
-BATCH_SIZE = int(os.getenv("BATCH_SIZE", "8"))
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", "32"))
 
 # =====================================================
 # Device
