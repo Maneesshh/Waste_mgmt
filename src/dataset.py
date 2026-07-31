@@ -1,12 +1,13 @@
 """
 Dataset preparation module.
 
-Responsibilities:
+Responsibilities
+----------------
 1. Read original YOLO dataset
 2. Remap 42 classes -> 5 classes
 3. Merge all images
 4. Shuffle
-5. Split 70/15/15
+5. Split into Train / Validation / Test
 6. Generate data.yaml
 """
 
@@ -18,21 +19,28 @@ import yaml
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-from src.config import *
-from src.mappings import *
-from src.utils import *
+from src.config import (
+    RAW_DATASET_DIR,
+    PROCESSED_DATASET_DIR,
+    LOG_DIR,
+    FINAL_CLASSES,
+)
+
+from src.mappings import CLASS_MAPPING, FINAL_CLASS_TO_ID
+from src.utils import create_directory, delete_directory
+from src.logger import setup_logger
 
 
 class DatasetPreparer:
 
     def __init__(self):
 
-        self.raw = RAW_DATASET
-        self.output = PROCESSED_DATASET
-
-        self.logger = setup_logger(LOG_DIR / "dataset.log")
+        self.raw = RAW_DATASET_DIR
+        self.output = PROCESSED_DATASET_DIR
 
         create_directory(LOG_DIR)
+
+        self.logger = setup_logger(LOG_DIR / "dataset.log")
 
         self.original_classes = []
         self.class_to_index = {}
@@ -46,7 +54,7 @@ class DatasetPreparer:
         yaml_file = self.raw / "data.yaml"
 
         if not yaml_file.exists():
-            raise FileNotFoundError(yaml_file)
+            raise FileNotFoundError(f"Cannot find {yaml_file}")
 
         with open(yaml_file, "r") as f:
             data = yaml.safe_load(f)
@@ -64,22 +72,47 @@ class DatasetPreparer:
 
     # ----------------------------------------------------------
 
+    def _find_validation_folder(self):
+
+        if (self.raw / "valid").exists():
+            return "valid"
+
+        if (self.raw / "val").exists():
+            return "val"
+
+        raise FileNotFoundError(
+            "Neither 'valid' nor 'val' folder exists."
+        )
+
+    # ----------------------------------------------------------
+
     def collect_dataset(self):
 
         self.samples = []
 
-        for split in ["train", "valid", "test"]:
+        validation_folder = self._find_validation_folder()
+
+        splits = [
+            "train",
+            validation_folder,
+            "test"
+        ]
+
+        for split in splits:
 
             img_dir = self.raw / split / "images"
             lbl_dir = self.raw / split / "labels"
 
+            if not img_dir.exists():
+                continue
+
             for img in img_dir.iterdir():
 
-                if img.suffix.lower() not in [
+                if img.suffix.lower() not in (
                     ".jpg",
                     ".jpeg",
                     ".png"
-                ]:
+                ):
                     continue
 
                 label = lbl_dir / f"{img.stem}.txt"
@@ -97,78 +130,65 @@ class DatasetPreparer:
             f"Collected {len(self.samples)} samples."
         )
 
-      # ----------------------------------------------------------
-    # Convert a single YOLO label file from 42 classes -> 5 classes
     # ----------------------------------------------------------
 
     def convert_label(self, label_path: Path):
-        """
-        Convert one label file from 42 classes to 5 classes.
-        Returns a list of converted YOLO label lines.
-        """
 
         converted = []
 
-        with open(label_path, "r") as f:
-            lines = f.readlines()
+        with open(label_path) as f:
 
-        for line in lines:
+            for line in f:
 
-            parts = line.strip().split()
+                parts = line.strip().split()
 
-            if len(parts) != 5:
-                continue
+                if len(parts) != 5:
+                    continue
 
-            old_class = int(parts[0])
+                old_class = int(parts[0])
 
-            old_name = self.original_classes[old_class]
+                old_name = self.original_classes[old_class]
 
-            # Skip classes that are not mapped
-            if old_name not in CLASS_MAPPING:
-                continue
+                if old_name not in CLASS_MAPPING:
+                    continue
 
-            final_name = CLASS_MAPPING[old_name]
+                final_name = CLASS_MAPPING[old_name]
 
-            new_class = FINAL_CLASS_TO_ID[final_name]
+                new_class = FINAL_CLASS_TO_ID[final_name]
 
-            converted.append(
-                f"{new_class} {' '.join(parts[1:])}"
-            )
+                converted.append(
+                    f"{new_class} {' '.join(parts[1:])}"
+                )
 
         return converted
 
     # ----------------------------------------------------------
-    # Convert every sample
-    # ----------------------------------------------------------
 
     def remap_dataset(self):
 
-        remapped = []
-
         self.logger.info("Remapping labels...")
+
+        remapped = []
 
         for image_path, label_path in tqdm(self.samples):
 
             labels = self.convert_label(label_path)
 
-            if len(labels) == 0:
-                continue
+            if labels:
 
-            remapped.append(
-                (
-                    image_path,
-                    labels
+                remapped.append(
+                    (
+                        image_path,
+                        labels
+                    )
                 )
-            )
 
         self.samples = remapped
 
         self.logger.info(
             f"Remaining samples: {len(self.samples)}"
-        )      
+        )
 
-            # ----------------------------------------------------------
-    # Split dataset into Train / Validation / Test
     # ----------------------------------------------------------
 
     def split_dataset(self):
@@ -197,9 +217,6 @@ class DatasetPreparer:
         self.logger.info(f"Val   : {len(val)}")
         self.logger.info(f"Test  : {len(test)}")
 
-
-            # ----------------------------------------------------------
-    # Copy images and labels
     # ----------------------------------------------------------
 
     def copy_split(self, dataset, split):
@@ -219,39 +236,46 @@ class DatasetPreparer:
                 image_dir / image_path.name
             )
 
-            label_path = label_dir / f"{image_path.stem}.txt"
+            with open(
+                label_dir / f"{image_path.stem}.txt",
+                "w"
+            ) as f:
 
-            with open(label_path, "w") as f:
+                f.write("\n".join(labels))
 
-                for line in labels:
-                    f.write(line + "\n")
-
-                        # ----------------------------------------------------------
-    # Create data.yaml
     # ----------------------------------------------------------
 
     def create_yaml(self):
 
-        yaml_data = {
+        data = {
+
             "train": "train/images",
+
             "val": "val/images",
+
             "test": "test/images",
+
             "nc": len(FINAL_CLASSES),
+
             "names": FINAL_CLASSES
+
         }
 
-        with open(self.output / "data.yaml", "w") as f:
-            yaml.dump(
-                yaml_data,
+        with open(
+            self.output / "data.yaml",
+            "w"
+        ) as f:
+
+            yaml.safe_dump(
+                data,
                 f,
                 sort_keys=False
             )
 
-        self.logger.info("Created data.yaml")
+        self.logger.info(
+            "Created data.yaml"
+        )
 
-
-            # ----------------------------------------------------------
-    # Prepare complete dataset
     # ----------------------------------------------------------
 
     def prepare(self):
@@ -285,4 +309,6 @@ class DatasetPreparer:
 
         self.create_yaml()
 
-        self.logger.info("Dataset preparation completed.")
+        self.logger.info(
+            "Dataset preparation completed."
+        )
