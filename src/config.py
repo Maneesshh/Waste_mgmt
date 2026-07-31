@@ -18,27 +18,24 @@ load_dotenv()
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 # =====================================================
-# Directories & Drive Auto-Detect
+# Directories
 # =====================================================
 
 DATASET_DIR = ROOT_DIR / "dataset"
+
 RAW_DATASET_DIR = DATASET_DIR / "raw"
+
 PROCESSED_DATASET_DIR = DATASET_DIR / "processed"
 
 MODELS_DIR = ROOT_DIR / "models"
+
+RUNS_DIR = ROOT_DIR / "runs"
+
 STATIC_DIR = ROOT_DIR / "static"
+
 UPLOAD_DIR = ROOT_DIR / "uploads"
+
 LOG_DIR = ROOT_DIR / "logs"
-
-# Check if Google Drive is mounted (Standard Colab path)
-GDRIVE_PATH = Path("/content/drive/MyDrive/WasteDetection/checkpoints/runs")
-
-if GDRIVE_PATH.parent.exists():
-    RUNS_DIR = GDRIVE_PATH
-    print(f"--> Config: Saving runs directly to Google Drive: {RUNS_DIR}")
-else:
-    RUNS_DIR = ROOT_DIR / "runs"
-    print(f"--> Config: Saving runs locally: {RUNS_DIR}")
 
 # =====================================================
 # Create folders automatically
